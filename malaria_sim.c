@@ -95,25 +95,15 @@ int main(int argc, char* argv[]) {
     MPI_Reduce(&executionTime, &maxTime, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
 
     if (worldRank == 0) {
-        printf("%lf\n", maxTime);
+        printf("Final time: %lf\n", maxTime);
         writeOutput(outputName, totalX1, N);
-        /*
-        printf("Values of X(1,1:N):\n");
-        for (int i = 0; i < N; i++) {
-            printf("%d ", totalX1[i]);
-        }
-        printf("\n");
-        */
-        /*
-        printf("State vectors of all simulations:\n");
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < 7; j++) {
-                printf("%d ", totalX[i*7 + j]);
-            }
-            printf("\n");
-        }
-        */
+        free(totalX1);
+        free(totalX);
     }
+
+    free(X);
+    MPI_Type_free(&tempType);
+    MPI_Type_free(&susceptibleHumansVector);
 
     MPI_Finalize();
 }
@@ -174,11 +164,16 @@ int writeOutput(char *fileName, int *output, int outputSize) {
         perror("Couldn't open output file");
         return -1;
     }
-    for (int j = 0; j < outputSize; j++) {
+    for (int j = 0; j < outputSize-1; j++) {
         if (0 > fprintf(file, "%d ", output[j])) {
             perror("Couldn't write to output file");
         }
     }
+
+    if (0 > fprintf(file, "%d", output[outputSize-1])) {
+        perror("Couldn't write to output file");
+    }
+
     if (0 > fprintf(file, "\n")) {
         perror("Couldn't write to output file");
     }
