@@ -6,12 +6,9 @@
 #include "prop.c"
 #include <sys/time.h>
 
-void runGillespie(int xInitial[], double tInitial, double T, int P[], int* result, double checkpointTimings[]);
-double gillespieIteration(int* result, int T, int P[], int rowsInP, int colsInP);
+void runGillespie(int xInitial[], double tInitial, double T, int P[], int* result);
 double generateRandom();
 int writeOutput(char *fileName, int *output, int outputSize);
-int writeProcessorTimings(double *output, int size);
-double mean(double* array, int simulationAmount, int timeInterval);
 
 int main(int argc, char* argv[]) {
     struct timeval time;
@@ -76,26 +73,12 @@ int main(int argc, char* argv[]) {
     int* X = malloc(sizeof(int) * 7 * simulationsPerProcess);
     int* totalX;
     int* totalX1;
-    double* averageTimings = malloc(sizeof(double)*4);
-    double* allAverageTimings;
-
-    double* simulationTimings = malloc(sizeof(double)*simulationsPerProcess*4);
-    //MPI_Win win;
-    //MPI_Alloc_mem(sizeof(double)*N*4, MPI_INFO_NULL, &checkpointTimings);
-
-    //MPI_Win_create(checkpointTimings, sizeof(double)*N*4, sizeof(double), MPI_INFO_NULL, MPI_COMM_WORLD, &win);
 
     // Start the timer
     double timeStart = MPI_Wtime();
 
     for (int i = 0; i < simulationsPerProcess; i++) {
-        double checkPointTimings[4];
-        runGillespie(x0, 0, T, P, &(X[i*7]), checkPointTimings);
-        memcpy(&(simulationTimings[i*4]), checkPointTimings, sizeof(double)*4);
-    }
-
-    for (int i = 0; i < 4; i++) {
-        averageTimings[i] = mean(simulationTimings, simulationsPerProcess, i);
+        runGillespie(x0, 0, T, P, &(X[i*7]));
     }
 
     double maxTime;
@@ -104,11 +87,9 @@ int main(int argc, char* argv[]) {
     if (worldRank == 0) {
         totalX1 = malloc(sizeof(int) * N);
         totalX = malloc(sizeof(int)*N*7);
-        allAverageTimings = malloc(sizeof(double)*size*4);
     }
     MPI_Gather(X, simulationsPerProcess*7, MPI_INT, totalX, simulationsPerProcess*7, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Gather(X, 1, susceptibleHumansVector, totalX1, simulationsPerProcess, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Gather(averageTimings, 4, MPI_DOUBLE, allAverageTimings, 4, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
     // Find the largest execution time
     MPI_Reduce(&executionTime, &maxTime, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
@@ -116,7 +97,6 @@ int main(int argc, char* argv[]) {
     if (worldRank == 0) {
         printf("Final time: %lf\n", maxTime);
         writeOutput(outputName, totalX1, N);
-        writeProcessorTimings(allAverageTimings, size);
         free(totalX1);
         free(totalX);
     }
@@ -128,16 +108,8 @@ int main(int argc, char* argv[]) {
     MPI_Finalize();
 }
 
-double mean(double* array, int simulationAmount, int timeInterval) {
-    double mean = 0;
-    for (int i = 0; i < simulationAmount; i++) {
-        mean += array[i*4 + timeInterval];
-    }
-    return (mean / simulationAmount);
-}
-
 // Run the Gillespie direct method
-void runGillespie(int x[], double tInitial, double T, int P[], int* result, double checkpointTimings[]) {
+void runGillespie(int x[], double tInitial, double T, int P[], int* result) {
     double t = tInitial;
     int rowsInP = 15;
     int colsInP = 7;
@@ -146,65 +118,38 @@ void runGillespie(int x[], double tInitial, double T, int P[], int* result, doub
         result[i] = x[i];
     }
 
-    double tau;
-    int r;
-    double timerStart = MPI_Wtime();
-
-    double timeIntervals[4] = {T/4, T/2, 3*T/4, T};
-
-    while (t < timeIntervals[0]) {
-        tau = gillespieIteration(result, T, P, rowsInP, colsInP);
-        t += tau;
-    }
-    checkpointTimings[0] = MPI_Wtime() - timerStart;
-    while (t < timeIntervals[1]) {
-        tau = gillespieIteration(result, T, P, rowsInP, colsInP);
-        t += tau;
-    }
-    checkpointTimings[1] = MPI_Wtime() - timerStart;
-    while (t < timeIntervals[2]) {
-        tau = gillespieIteration(result, T, P, rowsInP, colsInP);
-        t += tau;
-    }
-    checkpointTimings[2] = MPI_Wtime() - timerStart;
-    while (t < timeIntervals[3]) {
-        tau = gillespieIteration(result, T, P, rowsInP, colsInP);
-        t += tau;
-    }
-    checkpointTimings[3] = MPI_Wtime() - timerStart;
-
-}
-
-double gillespieIteration(int* result, int T, int P[], int rowsInP, int colsInP) {
     double w[rowsInP];
     double u1, u2, tau;
     int r;
 
-    double a0 = 0;
-    prop(result, w);
-    for (int i = 0; i < rowsInP; i++) {
-        a0 += w[i];
-    }
-
-    u1 = generateRandom();
-    u2 = generateRandom();
-    tau = -log(u1)/a0;
-
-    double temp = a0*u2;
-    r = 0;
-    double sum = 0;
-    for (int i = 0; i < rowsInP; i++) {
-        sum += w[i];
-        if (sum >= temp) {
-            break;
+    while (t < T) {
+        double a0 = 0;
+        prop(result, w);
+        for (int i = 0; i < rowsInP; i++) {
+            a0 += w[i];
         }
-        r++;
+    
+        u1 = generateRandom();
+        u2 = generateRandom();
+        tau = -log(u1)/a0;
+
+        double temp = a0*u2;
+        r = 0;
+        double sum = 0;
+        for (int i = 0; i < rowsInP; i++) {
+            sum += w[i];
+            if (sum >= temp) {
+                break;
+            }
+            r++;
+        }
+
+        for (int i = 0; i < colsInP; i++) {
+            result[i] += P[r*colsInP + i];
+        }
+        t += tau;
     }
 
-    for (int i = 0; i < colsInP; i++) {
-        result[i] += P[r*colsInP + i];
-    }
-    return tau;
 }
 
 double generateRandom() {
@@ -235,24 +180,5 @@ int writeOutput(char *fileName, int *output, int outputSize) {
     if (0 != fclose(file)) {
         perror("Warning: couldn't close output file");
     }
-    return 0;
-}
-
-int writeProcessorTimings(double *output, int size) {
-    FILE *file;
-    if (NULL == (file = fopen("processor_timings.txt", "w"))) {
-        perror("Couldn't open output file");
-        return -1;
-    }
-
-    for (int i = 0; i < 4; i++) {
-        fprintf(file, "Average time(s) for time interval %d: ", i);
-        for (int j = 0; j < size; j++) {
-            fprintf(file, "%lf ", output[j*4 + i]);
-        }
-        if (i != 3)
-            fprintf(file, "\n");
-    }
-
     return 0;
 }
