@@ -8,13 +8,15 @@
 
 void runGillespie(int xInitial[], double tInitial, double T, int P[], int* result);
 double generateRandom();
+int writeOutput(char *fileName, int *output, int outputSize);
 
 int main(int argc, char* argv[]) {
     struct timeval time;
     gettimeofday(&time,NULL);
     // Seeding using time
     srand((time.tv_sec*1000)+(time.tv_usec / 1000));
-    int N = atoi(argv[1]);
+    char* outputName = argv[1];    
+    int N = atoi(argv[2]);
     int worldRank;
     MPI_Status status;
     int size;
@@ -72,9 +74,15 @@ int main(int argc, char* argv[]) {
     int* totalX;
     int* totalX1;
 
+    // Start the timer
+    double timeStart = MPI_Wtime();
+
     for (int i = 0; i < simulationsPerProcess; i++) {
         runGillespie(x0, 0, T, P, &(X[i*7]));
     }
+
+    double maxTime;
+    double executionTime = MPI_Wtime() - timeStart;
 
     if (worldRank == 0) {
         totalX1 = malloc(sizeof(int) * N);
@@ -83,12 +91,20 @@ int main(int argc, char* argv[]) {
     MPI_Gather(X, simulationsPerProcess*7, MPI_INT, totalX, simulationsPerProcess*7, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Gather(X, 1, susceptibleHumansVector, totalX1, simulationsPerProcess, MPI_INT, 0, MPI_COMM_WORLD);
 
+    // Find the largest execution time
+    MPI_Reduce(&executionTime, &maxTime, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+
     if (worldRank == 0) {
+        printf("%lf\n", maxTime);
+        writeOutput(outputName, totalX1, N);
+        /*
         printf("Values of X(1,1:N):\n");
         for (int i = 0; i < N; i++) {
             printf("%d ", totalX1[i]);
         }
         printf("\n");
+        */
+        /*
         printf("State vectors of all simulations:\n");
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < 7; j++) {
@@ -96,6 +112,7 @@ int main(int argc, char* argv[]) {
             }
             printf("\n");
         }
+        */
     }
 
     MPI_Finalize();
@@ -148,4 +165,25 @@ void runGillespie(int x[], double tInitial, double T, int P[], int* result) {
 double generateRandom() {
     double randomNumber = (double)rand()/(double)(RAND_MAX);
     return randomNumber;
+}
+
+// Function for handling output. Inspired by the readInput function given in A1.
+int writeOutput(char *fileName, int *output, int outputSize) {
+    FILE *file;
+    if (NULL == (file = fopen(fileName, "w"))) {
+        perror("Couldn't open output file");
+        return -1;
+    }
+    for (int j = 0; j < outputSize; j++) {
+        if (0 > fprintf(file, "%d ", output[j])) {
+            perror("Couldn't write to output file");
+        }
+    }
+    if (0 > fprintf(file, "\n")) {
+        perror("Couldn't write to output file");
+    }
+    if (0 != fclose(file)) {
+        perror("Warning: couldn't close output file");
+    }
+    return 0;
 }
