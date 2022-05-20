@@ -73,38 +73,32 @@ int main(int argc, char* argv[]) {
     MPI_Type_create_resized(tempType1, 0, sizeof(int), &susceptibleHumansVector);
     MPI_Type_commit(&susceptibleHumansVector);
 
+    MPI_Datatype tempType2, totalResultVector;
+
     int* X = malloc(sizeof(int) * 7 * simulationsPerProcess);
     int* totalX;
     int* totalX1;
     double* averageTimings = malloc(sizeof(double)*4);
+    double* allAverageTimings;
 
     double* simulationTimings = malloc(sizeof(double)*simulationsPerProcess*4);
+    //MPI_Win win;
+    //MPI_Alloc_mem(sizeof(double)*N*4, MPI_INFO_NULL, &checkpointTimings);
+
+    //MPI_Win_create(checkpointTimings, sizeof(double)*N*4, sizeof(double), MPI_INFO_NULL, MPI_COMM_WORLD, &win);
 
     // Start the timer
     double timeStart = MPI_Wtime();
 
-    // Run the Gillespie simulation N / size times
     for (int i = 0; i < simulationsPerProcess; i++) {
         double checkPointTimings[4];
         runGillespie(x0, 0, T, P, &(X[i*7]), checkPointTimings);
         memcpy(&(simulationTimings[i*4]), checkPointTimings, sizeof(double)*4);
     }
 
-    // Calculate the average time to reach each time
     for (int i = 0; i < 4; i++) {
         averageTimings[i] = calculateMeanOfInterval(simulationTimings, simulationsPerProcess, i);
     }
-
-    double* allAverageTimings;
-    MPI_Win win;
-
-    // Declare accessible memory area
-    MPI_Alloc_mem(sizeof(double)*size*4, MPI_INFO_NULL, &allAverageTimings);
-    MPI_Win_create(allAverageTimings, sizeof(double)*4*size, sizeof(double)*4, MPI_INFO_NULL, MPI_COMM_WORLD, &win);
-    MPI_Win_fence(0, win);
-
-    // Write the average timings of each process to the window
-    MPI_Put(averageTimings, 4, MPI_DOUBLE, 0, worldRank, 4, MPI_DOUBLE, win);
 
     double maxTime;
     double executionTime = MPI_Wtime() - timeStart;
@@ -112,14 +106,15 @@ int main(int argc, char* argv[]) {
     if (worldRank == 0) {
         totalX1 = malloc(sizeof(int) * N);
         totalX = malloc(sizeof(int)*N*7);
+        allAverageTimings = malloc(sizeof(double)*size*4);
     }
-
-    //MPI_Gather(X, simulationsPerProcess*7, MPI_INT, totalX, simulationsPerProcess*7, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Gather(X, simulationsPerProcess*7, MPI_INT, totalX, simulationsPerProcess*7, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Gather(X, 1, susceptibleHumansVector, totalX1, simulationsPerProcess, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Gather(averageTimings, 4, MPI_DOUBLE, allAverageTimings, 4, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
     // Find the largest execution time
     MPI_Reduce(&executionTime, &maxTime, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    MPI_Win_fence(0, win);
+
     if (worldRank == 0) {
         printf("Final time: %lf\n", maxTime);
         writeOutput(outputName, totalX1, N);
@@ -128,8 +123,6 @@ int main(int argc, char* argv[]) {
         free(totalX1);
         free(totalX);
     }
-    MPI_Win_free(&win);
-    MPI_Free_mem(allAverageTimings);
 
     free(X);
     MPI_Type_free(&tempType1);
