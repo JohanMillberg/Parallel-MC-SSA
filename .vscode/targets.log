@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Wed May 18 23:47:42 2022
+# Make data base, printed on Fri May 20 16:27:56 2022
 
 # Variables
 
@@ -61,7 +61,7 @@ XDG_RUNTIME_DIR = /mnt/wslg/runtime-dir
 # environment
 VSCODE_LOG_STACK = false
 # environment
-VSCODE_IPC_HOOK_CLI = /mnt/wslg/runtime-dir/vscode-ipc-a10053c7-db2f-4abd-9277-f64bbc83fcee.sock
+VSCODE_IPC_HOOK_CLI = /mnt/wslg/runtime-dir/vscode-ipc-ffe92aaa-be31-40e2-9728-c37e8d9c3047.sock
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -81,7 +81,7 @@ WSL_INTEROP = /run/WSL/8_interop
 # environment
 PULSE_SERVER = /mnt/wslg/PulseServer
 # environment
-WT_SESSION = cd6e5b73-5855-4955-b9d9-11078d23917c
+WT_SESSION = e6119eac-bb07-4341-b72e-bdc6f47c966f
 # environment
 MANPATH = /home/linuxbrew/.linuxbrew/share/man:
 # environment
@@ -95,7 +95,7 @@ HOMEBREW_CELLAR = /home/linuxbrew/.linuxbrew/Cellar
 # environment
 LOGNAME = johan
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
 # environment
 LESSCLOSE = /usr/bin/lesspipe %s %s
 # environment
@@ -185,9 +185,9 @@ WSL_DISTRO_NAME = Ubuntu
 
 # Directories
 
-# . (device 2080, inode 36529): 7 files, no impossibilities.
+# . (device 2080, inode 36529): 13 files, no impossibilities.
 
-# 7 files, no impossibilities in 1 directories.
+# 13 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -213,14 +213,14 @@ all: malaria_sim
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-05-18 21:24:03
+#  Last modified 2022-05-19 17:45:33.850957103
 #  File has been updated.
 #  Successfully updated.
 
 malaria_sim: malaria_sim.c
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: ''
-#  Last modified 2022-05-18 23:33:13.016816557
+#  File does not exist.
 #  File has been updated.
 #  Needs to be updated (-q is set).
 # automatic
@@ -261,7 +261,7 @@ clean:
 # Not a target:
 malaria_sim.c:
 #  Implicit rule search has been done.
-#  Last modified 2022-05-18 23:34:30.286816349
+#  Last modified 2022-05-20 15:19:10.476086754
 #  File has been updated.
 #  Successfully updated.
 
@@ -273,13 +273,13 @@ malaria_sim.c:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 13 / storage = 116 B / avg = 8 B
-# current buf: size = 8162 B / used = 116 B / count = 13 / avg = 8 B
- 
+# strcache buffers: 1 (0) / strings = 20 / storage = 218 B / avg = 10 B
+# current buf: size = 8162 B / used = 218 B / count = 20 / avg = 10 B
 
-# strcache performance: lookups = 25 / hit rate = 48%
+# strcache performance: lookups = 31 / hit rate = 35%
+ 
 # hash-table stats:
-# Load=13/8192=0%, Rehash=0, Collisions=1/25=4%
-# Finished Make data base on Wed May 18 23:47:42 2022
+# Load=20/8192=0%, Rehash=0, Collisions=1/31=3%
+# Finished Make data base on Fri May 20 16:27:56 2022
 
  
