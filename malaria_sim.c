@@ -14,12 +14,14 @@ int writeProcessorTimings(double *output, int size);
 double calculateMeanOfInterval(double* array, int simulationAmount, int timeInterval);
 
 int main(int argc, char* argv[]) {
+
+    char* outputName = argv[1];    
+    int N = atoi(argv[2]);
+
     struct timeval time;
     gettimeofday(&time,NULL);
     // Seeding using time
     srand((time.tv_sec*1000)+(time.tv_usec / 1000));
-    char* outputName = argv[1];    
-    int N = atoi(argv[2]);
     int worldRank;
     MPI_Status status;
     int size;
@@ -48,6 +50,7 @@ int main(int argc, char* argv[]) {
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Comm_rank(MPI_COMM_WORLD, &worldRank);
 
+    // Used for random seeding
     int seedingNumbers[size];
     if (worldRank == 0) {
         for (int i = 0; i < size; i++) {
@@ -73,12 +76,17 @@ int main(int argc, char* argv[]) {
     MPI_Type_create_resized(tempType1, 0, sizeof(int), &susceptibleHumansVector);
     MPI_Type_commit(&susceptibleHumansVector);
 
+    // Initialize the local result matrix
     int* X = malloc(sizeof(int) * 7 * simulationsPerProcess);
+
+    // Global result matrix
     int* totalX;
+
+    // Global vector for values of X(1,1:N)
     int* totalX1;
-    double* averageTimings = malloc(sizeof(double)*4);
 
     double* simulationTimings = malloc(sizeof(double)*simulationsPerProcess*4);
+    double* averageTimings = malloc(sizeof(double)*4);
 
     // Start the timer
     double timeStart = MPI_Wtime();
@@ -87,6 +95,8 @@ int main(int argc, char* argv[]) {
     for (int i = 0; i < simulationsPerProcess; i++) {
         double checkPointTimings[4];
         runGillespie(x0, 0, T, P, &(X[i*7]), checkPointTimings);
+
+        // Store the times to reach each checkpoint (t = 25, 50, 75, 100)
         memcpy(&(simulationTimings[i*4]), checkPointTimings, sizeof(double)*4);
     }
 
@@ -120,6 +130,8 @@ int main(int argc, char* argv[]) {
     // Find the largest execution time
     MPI_Reduce(&executionTime, &maxTime, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     MPI_Win_fence(0, win);
+
+    // Print final time and write to output files
     if (worldRank == 0) {
         printf("Final time: %lf\n", maxTime);
         writeOutput(outputName, totalX1, N);
@@ -132,6 +144,8 @@ int main(int argc, char* argv[]) {
     MPI_Free_mem(allAverageTimings);
 
     free(X);
+    free(simulationTimings);
+    free(averageTimings);
     MPI_Type_free(&tempType1);
     MPI_Type_free(&susceptibleHumansVector);
 
