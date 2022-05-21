@@ -9,14 +9,14 @@
 void runGillespie(int xInitial[], double tInitial, double T, int P[], int* result, double checkpointTimings[]);
 double gillespieIteration(int* result, int T, int P[], int rowsInP, int colsInP);
 double generateRandom();
-int writeOutput(char *fileName, int *output, int outputSize);
+int writeOutput(int *output, int outputSize);
 int writeProcessorTimings(double *output, int size);
 double calculateMeanOfInterval(double* array, int simulationAmount, int timeInterval);
 
 int main(int argc, char* argv[]) {
-
-    char* outputName = argv[1];    
-    int N = atoi(argv[2]);
+    
+    int N = atoi(argv[1]);
+    int createOutput = atoi(argv[2]);
 
     struct timeval time;
     gettimeofday(&time,NULL);
@@ -135,8 +135,10 @@ int main(int argc, char* argv[]) {
     // Print final time and write to output files
     if (worldRank == 0) {
         printf("Final time: %lf\n", maxTime);
-        writeOutput(outputName, totalX1, N);
-        writeProcessorTimings(allAverageTimings, size);
+        if (createOutput) {
+            writeOutput(totalX1, N);
+            writeProcessorTimings(allAverageTimings, size);
+        }
 
         free(totalX1);
         free(totalX);
@@ -242,9 +244,9 @@ double generateRandom() {
 }
 
 // Function for handling output. Inspired by the readInput function given in A1.
-int writeOutput(char *fileName, int *output, int outputSize) {
+int writeOutput(int *output, int outputSize) {
     FILE *file;
-    if (NULL == (file = fopen(fileName, "w"))) {
+    if (NULL == (file = fopen("susceptible.txt", "w"))) {
         perror("Couldn't open output file");
         return -1;
     }
