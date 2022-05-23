@@ -229,27 +229,14 @@ void runGillespie(int x[], double tInitial, double T, int P[], int* result, doub
     // Define the timing intervals
     double timeIntervals[4] = {T/4, T/2, 3*T/4, T};
 
-    while (t < timeIntervals[0]) {
-        tau = gillespieIteration(result, T, P, rowsInP, colsInP);
-        t += tau;
+    // Run the simulation and note the time after reaching each interval
+    for (int i = 0; i < 4; i++) {
+        while (t < timeIntervals[i]) {
+            tau = gillespieIteration(result, T, P, rowsInP, colsInP);
+            t += tau;
+        }
+        checkpointTimings[i] = MPI_Wtime() - timerStart;
     }
-    checkpointTimings[0] = MPI_Wtime() - timerStart;
-    while (t < timeIntervals[1]) {
-        tau = gillespieIteration(result, T, P, rowsInP, colsInP);
-        t += tau;
-    }
-    checkpointTimings[1] = MPI_Wtime() - timerStart;
-    while (t < timeIntervals[2]) {
-        tau = gillespieIteration(result, T, P, rowsInP, colsInP);
-        t += tau;
-    }
-    checkpointTimings[2] = MPI_Wtime() - timerStart;
-    while (t < timeIntervals[3]) {
-        tau = gillespieIteration(result, T, P, rowsInP, colsInP);
-        t += tau;
-    }
-    checkpointTimings[3] = MPI_Wtime() - timerStart;
-
 }
 
 // Helper function executing one Gillespie iteration
