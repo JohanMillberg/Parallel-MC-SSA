@@ -1,6 +1,0 @@
-Average time it takes for each processor to reach a certain time interval:
-
-Average time(s) for time interval 0: 0.000215 0.000216 
-Average time(s) for time interval 1: 0.000298 0.000299 
-Average time(s) for time interval 2: 0.000365 0.000367 
-Average time(s) for time interval 3: 0.000432 0.000434 
