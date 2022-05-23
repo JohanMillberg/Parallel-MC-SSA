@@ -1,5 +1,5 @@
-make --dry-run --always-make --keep-going --print-directory
+make --dry-run --keep-going --print-directory
 make: Entering directory '/home/johan/code_files/PDP_assignments/MC_SSA'
-mpicc -std=c99 -g -O3 -o malaria_sim malaria_sim.c -lm
+make: Nothing to be done for 'all'.
 make: Leaving directory '/home/johan/code_files/PDP_assignments/MC_SSA'
  

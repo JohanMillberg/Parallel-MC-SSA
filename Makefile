@@ -7,7 +7,7 @@ BIN = malaria_sim
 all: $(BIN)
 
 malaria_sim: malaria_sim.c
-	$(CC) -fsanitize=address $(CFLAGS) -o $@ $< $(LIBS)
+	$(CC) $(CFLAGS) -o $@ $< $(LIBS)
 	
 clean:
 	$(RM) $(BIN)

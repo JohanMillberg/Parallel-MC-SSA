@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sat May 21 13:25:22 2022
+# Make data base, printed on Mon May 23 15:02:06 2022
 
 # Variables
 
@@ -32,6 +32,7 @@ CURDIR := /home/johan/code_files/PDP_assignments/MC_SSA
 SHELL = /bin/sh
 # makefile (from 'Makefile', line 5)
 BIN = malaria_sim
+ 
 # environment
 VSCODE_NLS_CONFIG = {"locale":"en","availableLanguages":{}}
 # environment
@@ -61,7 +62,7 @@ XDG_RUNTIME_DIR = /mnt/wslg/runtime-dir
 # environment
 VSCODE_LOG_STACK = false
 # environment
-VSCODE_IPC_HOOK_CLI = /mnt/wslg/runtime-dir/vscode-ipc-073ad221-55eb-411a-b415-01ef37873bf6.sock
+VSCODE_IPC_HOOK_CLI = /mnt/wslg/runtime-dir/vscode-ipc-301ac432-3ad2-49b1-84f1-0bbe2ccacb9c.sock
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -78,10 +79,11 @@ PWD = /home/johan/code_files/PDP_assignments/MC_SSA
 .LOADED := 
 # environment
 WSL_INTEROP = /run/WSL/8_interop
+ 
 # environment
 PULSE_SERVER = /mnt/wslg/PulseServer
 # environment
-WT_SESSION = 7ee6f534-723a-4817-95fb-2c32a46c9a2f
+WT_SESSION = 8b79bc3d-100a-4fed-a33b-47c80f3d4101
 # environment
 MANPATH = /home/linuxbrew/.linuxbrew/share/man:
 # environment
@@ -158,6 +160,7 @@ LC_ALL = C
 HOSTTYPE = x86_64
 # makefile (from 'Makefile', line 3)
 LIBS = -lm
+ 
 # automatic
 ^F = $(notdir $^)
 # default
@@ -187,9 +190,9 @@ MOTD_SHOWN = update-motd
 
 # Directories
 
-# . (device 2080, inode 36529): 17 files, no impossibilities.
+# . (device 2080, inode 36529): 20 files, no impossibilities.
 
-# 17 files, no impossibilities in 1 directories.
+# 20 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -207,13 +210,13 @@ all: malaria_sim
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-05-19 17:45:33.850957103
+#  Last modified 2022-05-23 15:01:04.556627219
 #  File has been updated.
 #  Successfully updated.
 
 malaria_sim: malaria_sim.c
 #  Implicit rule search has not been done.
-#  Last modified 2022-05-20 18:00:05.046245829
+#  Last modified 2022-05-23 15:01:05.856627216
 #  File has been updated.
 #  Successfully updated.
 #  recipe to execute (from 'Makefile', line 10):
@@ -236,7 +239,7 @@ clean:
 # Not a target:
 malaria_sim.c:
 #  Implicit rule search has been done.
-#  Last modified 2022-05-20 17:51:29.766247215
+#  Last modified 2022-05-23 15:00:19.166627341
 #  File has been updated.
 #  Successfully updated.
 
@@ -248,12 +251,12 @@ malaria_sim.c:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 23 / storage = 260 B / avg = 11 B
-# current buf: size = 8162 B / used = 260 B / count = 23 / avg = 11 B
+# strcache buffers: 1 (0) / strings = 26 / storage = 300 B / avg = 11 B
+# current buf: size = 8162 B / used = 300 B / count = 26 / avg = 11 B
 
-# strcache performance: lookups = 34 / hit rate = 32%
+# strcache performance: lookups = 37 / hit rate = 29%
 # hash-table stats:
-# Load=23/8192=0%, Rehash=0, Collisions=1/34=3%
-# Finished Make data base on Sat May 21 13:25:22 2022
+# Load=26/8192=0%, Rehash=0, Collisions=1/37=3%
+# Finished Make data base on Mon May 23 15:02:06 2022
 
  
