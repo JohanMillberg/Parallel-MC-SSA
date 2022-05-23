@@ -76,12 +76,6 @@ int main(int argc, char* argv[]) {
     // Initialize the local result matrix
     int* X = malloc(sizeof(int) * 7 * simulationsPerProcess);
 
-    // Global result matrix
-    int* totalX;
-
-    // Global vector for values of X(1,1:N)
-    int* totalX1;
-
     int* totalBins;
 
     double* simulationTimings = malloc(sizeof(double)*simulationsPerProcess*4);
@@ -140,8 +134,6 @@ int main(int argc, char* argv[]) {
     double executionTime = MPI_Wtime() - timeStart;
 
     if (worldRank == 0) {
-        totalX1 = malloc(sizeof(int) * N);
-        totalX = malloc(sizeof(int)*N*7);
         totalBins = malloc(sizeof(int)*nBins*N);
     }
 
@@ -172,8 +164,7 @@ int main(int argc, char* argv[]) {
             writeProcessorTimings(allAverageTimings, size);
         }
     
-        free(totalX1);
-        free(totalX);
+        free(finalBins);
     }
     MPI_Win_free(&win);
     MPI_Free_mem(allAverageTimings);

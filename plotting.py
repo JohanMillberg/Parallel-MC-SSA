@@ -13,7 +13,7 @@ plt.legend()
 plt.show()
 
 
-time1 = [142.096, 142.934, 143.557, 150.704, 164.259]
+time1 = [142.096, 142.934, 146.188, 148.743, 160.115]
 
 plt.plot(n_cores, time1)
 plt.xlabel('Number of processes')
