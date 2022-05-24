@@ -168,7 +168,7 @@ int main(int argc, char* argv[]) {
     }
     MPI_Win_free(&win);
     MPI_Free_mem(allAverageTimings);
-
+    free(binArray);
     free(X);
     free(simulationTimings);
     free(averageTimings);
@@ -209,7 +209,6 @@ void runGillespie(int x[], double tInitial, double T, int P[], int* result, doub
     }
 
     double tau;
-    int r;
     double timerStart = MPI_Wtime();
 
     // Define the timing intervals

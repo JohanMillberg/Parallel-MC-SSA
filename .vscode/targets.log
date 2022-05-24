@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Mon May 23 15:02:06 2022
+# Make data base, printed on Tue May 24 12:29:07 2022
 
 # Variables
 
@@ -62,7 +62,7 @@ XDG_RUNTIME_DIR = /mnt/wslg/runtime-dir
 # environment
 VSCODE_LOG_STACK = false
 # environment
-VSCODE_IPC_HOOK_CLI = /mnt/wslg/runtime-dir/vscode-ipc-301ac432-3ad2-49b1-84f1-0bbe2ccacb9c.sock
+VSCODE_IPC_HOOK_CLI = /mnt/wslg/runtime-dir/vscode-ipc-5ce5d239-a969-452d-b3c1-6c24195ff0cd.sock
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -79,11 +79,10 @@ PWD = /home/johan/code_files/PDP_assignments/MC_SSA
 .LOADED := 
 # environment
 WSL_INTEROP = /run/WSL/8_interop
- 
 # environment
 PULSE_SERVER = /mnt/wslg/PulseServer
 # environment
-WT_SESSION = 8b79bc3d-100a-4fed-a33b-47c80f3d4101
+WT_SESSION = 81fa14fa-26a7-4a85-902a-f25a2eeed8dc
 # environment
 MANPATH = /home/linuxbrew/.linuxbrew/share/man:
 # environment
@@ -97,7 +96,7 @@ HOMEBREW_CELLAR = /home/linuxbrew/.linuxbrew/Cellar
 # environment
 LOGNAME = johan
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
 # environment
 LESSCLOSE = /usr/bin/lesspipe %s %s
 # environment
@@ -160,7 +159,6 @@ LC_ALL = C
 HOSTTYPE = x86_64
 # makefile (from 'Makefile', line 3)
 LIBS = -lm
- 
 # automatic
 ^F = $(notdir $^)
 # default
@@ -179,10 +177,8 @@ TERM = xterm-256color
 VSCODE_EXTHOST_WILL_SEND_SOCKET = true
 # environment
 WSL_DISTRO_NAME = Ubuntu
-# environment
-MOTD_SHOWN = update-motd
 # variable set hash-table stats:
-# Load=84/1024=8%, Rehash=0, Collisions=6/110=5%
+# Load=83/1024=8%, Rehash=0, Collisions=6/109=6%
 
 # Pattern-specific Variable Values
 
@@ -190,9 +186,9 @@ MOTD_SHOWN = update-motd
 
 # Directories
 
-# . (device 2080, inode 36529): 20 files, no impossibilities.
+# . (device 2080, inode 36529): 22 files, no impossibilities.
 
-# 20 files, no impossibilities in 1 directories.
+# 22 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -211,12 +207,13 @@ all: malaria_sim
 Makefile:
 #  Implicit rule search has been done.
 #  Last modified 2022-05-23 15:01:04.556627219
+ 
 #  File has been updated.
 #  Successfully updated.
 
 malaria_sim: malaria_sim.c
 #  Implicit rule search has not been done.
-#  Last modified 2022-05-23 15:01:05.856627216
+#  Last modified 2022-05-24 11:49:31.160751629
 #  File has been updated.
 #  Successfully updated.
 #  recipe to execute (from 'Makefile', line 10):
@@ -239,7 +236,7 @@ clean:
 # Not a target:
 malaria_sim.c:
 #  Implicit rule search has been done.
-#  Last modified 2022-05-23 15:00:19.166627341
+#  Last modified 2022-05-24 11:49:28.610751636
 #  File has been updated.
 #  Successfully updated.
 
@@ -251,12 +248,12 @@ malaria_sim.c:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 26 / storage = 300 B / avg = 11 B
-# current buf: size = 8162 B / used = 300 B / count = 26 / avg = 11 B
+# strcache buffers: 1 (0) / strings = 28 / storage = 343 B / avg = 12 B
+# current buf: size = 8162 B / used = 343 B / count = 28 / avg = 12 B
 
-# strcache performance: lookups = 37 / hit rate = 29%
+# strcache performance: lookups = 39 / hit rate = 28%
 # hash-table stats:
-# Load=26/8192=0%, Rehash=0, Collisions=1/37=3%
-# Finished Make data base on Mon May 23 15:02:06 2022
+# Load=28/8192=0%, Rehash=0, Collisions=1/39=3%
+# Finished Make data base on Tue May 24 12:29:07 2022
 
  
